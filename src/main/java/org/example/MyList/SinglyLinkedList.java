@@ -38,9 +38,7 @@ public class SinglyLinkedList {
 
     private int size = 0;
 
-    public Node getHead() {
-        return head;
-    }
+    private int index;
 
     public SinglyLinkedList() {
         head = null;
@@ -49,6 +47,44 @@ public class SinglyLinkedList {
     public void add(int k) {
         head = new Node(k, head);
         ++size;
+    }
+
+    public void insertionByValue(int k) {
+        if (head == null) add(k);
+        else if (head.getKey() > k) {
+            Node tmp = head;
+            head = new Node(k, tmp);
+            size++;
+        } else {
+            Node tmp = head;
+            while (tmp != null) {
+                if (tmp.getNext() == null && k > tmp.getKey()) {
+                    Node last = new Node(k, null);
+                    tmp.setNext(last);
+                }
+                if (tmp.getKey() < k && tmp.getNext().getKey() > k) {
+                    Node now = new Node(k, tmp.getNext());
+                    tmp.setNext(now);
+                }
+                tmp = tmp.getNext();
+            }
+            size++;
+        }
+    }
+
+    public void addByIndex(int index, int value) {
+        Node tmp = head;
+        int counter = 0;
+        while (tmp != null) {
+            ++counter;
+            if (counter == index) {
+                Node newElement = new Node(value, tmp.getNext());
+                tmp.setNext(newElement);
+                size++;
+                break;
+            }
+            tmp = tmp.getNext();
+        }
     }
 
     public void removeFirst() {
@@ -60,10 +96,14 @@ public class SinglyLinkedList {
         return size;
     }
 
-    public int contain(int value){
+    public Node getHead() {
+        return head;
+    }
+
+    public int contain(int value) {
         Node tmp = head;
         while (tmp != null) {
-            if(tmp.key == value) return tmp.getKey();
+            if (tmp.key == value) return tmp.getKey();
             else tmp = tmp.next;
         }
         return -1;
@@ -76,5 +116,9 @@ public class SinglyLinkedList {
             tmp = tmp.next;
         }
         System.out.println();
+    }
+
+    public void printMessage(String message) {
+        System.out.println(message);
     }
 }

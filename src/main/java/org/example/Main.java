@@ -6,30 +6,27 @@ import org.example.MyList.Student;
 public class Main {
     public static void main(String[] args) {
         SinglyLinkedList list = new SinglyLinkedList();
+        list.printMessage("Добавление элементов");
         list.add(6);
-        System.out.println(list.getHead().getKey());
         list.add(4);
-        System.out.println(list.getHead().getKey());
-
         list.print();
-        System.out.println("Получение длины листа");
-        System.out.println(list.getSize());
-        System.out.println("Содержит ли список элемент");
+        list.printMessage("Вставка по значению элементов 3, 9, 5");
+        list.insertionByValue(3);
+        list.insertionByValue(9);
+        list.insertionByValue(5);
+        list.print();
+        list.printMessage("Длина листа : "+ list.getSize());
+        list.printMessage("Содержит ли список элемент");
         System.out.println(list.contain(6));
         System.out.println(list.contain(2));
-        System.out.println("Удаление первого элемента");
+        list.printMessage("Удаление первого элемента");
         list.removeFirst();
-        System.out.println("Вывод длины списка после удаления и его содержание");
-        System.out.println(list.getSize());
+        list.printMessage("Длина листа : "+ list.getSize());
         list.print();
-        System.out.println("Повтор удаления и вывод длины листа");
-        list.removeFirst();
-        System.out.println(list.getSize());
+        list.printMessage("Добавление элемента: -1 по индексу: 3 ");
+        list.addByIndex(3, -1);
+        list.print();
+        list.printMessage("Длина листа : "+ list.getSize());
 
-        Student student = new Student();
-        student.setName("Dan");
-        student.setId(102L);
-        student.setGrades(new int[]{4,4,4,4});
-        System.out.println(student);
     }
 }
