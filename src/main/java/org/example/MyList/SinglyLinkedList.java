@@ -52,8 +52,7 @@ public class SinglyLinkedList {
     }
 
     public void removeFirst() {
-        Node tmp = head;
-        head = tmp.getNext();
+        head = head.getNext();
         --size;
     }
 
