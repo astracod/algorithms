@@ -42,6 +42,7 @@ public class SinglyLinkedList {
 
     public SinglyLinkedList() {
         head = null;
+        size = 0;
     }
 
     public void add(int k) {
@@ -51,35 +52,30 @@ public class SinglyLinkedList {
 
     public void insertionByValue(int k) {
         if (head == null) add(k);
-        else if (head.getKey() > k) {
+        else if (head.getKey() > k)
+            head = new Node(k, head);
+        else {
             Node tmp = head;
-            head = new Node(k, tmp);
-            size++;
-        } else {
-            Node tmp = head;
-            while (tmp != null) {
-                if (tmp.getNext() == null && k > tmp.getKey()) {
-                    Node last = new Node(k, null);
-                    tmp.setNext(last);
-                }
-                if (tmp.getKey() < k && tmp.getNext().getKey() > k) {
-                    Node now = new Node(k, tmp.getNext());
-                    tmp.setNext(now);
-                }
+            while (tmp.getNext() != null && tmp.getNext().getKey() < k)
                 tmp = tmp.getNext();
-            }
-            size++;
+            tmp.setNext(new Node(k, tmp.getNext()));
         }
+        size++;
     }
 
-    public void addByIndex(int index, int value) {
+    public void addByIndex(int index, int k) {
+        if (index > size) return;
+        if (index == 0) {
+            head = new Node(k, head);
+            size++;
+            return;
+        }
         Node tmp = head;
         int counter = 0;
         while (tmp != null) {
             ++counter;
             if (counter == index) {
-                Node newElement = new Node(value, tmp.getNext());
-                tmp.setNext(newElement);
+                tmp.setNext(new Node(k, tmp.getNext()));
                 size++;
                 break;
             }
@@ -90,6 +86,43 @@ public class SinglyLinkedList {
     public void removeFirst() {
         head = head.getNext();
         --size;
+    }
+
+    public void removeByValue(int value) {
+        if (head == null)        // если список пуст
+            return;
+        if (head.getKey() == value) {    // если нужно удалить первый элемент
+            head = head.getNext();
+            size--;
+            return;
+        }
+        Node x = head;            // если нужно удалить любой другой элемент
+        while (x.getNext() != null && x.getNext().getKey() != value)
+            x = x.getNext();
+        if (x.getNext() != null) {
+            x.setNext(x.getNext().getNext());
+            size--;
+        }
+    }
+
+    public void removeByIndex(int index) {
+        if (index > size-1 || this.size == 0) return;
+        Node tmp = head;
+        int counter = 0;
+        while (tmp.getNext() != null) {
+            if (index == 0) {
+                head = head.getNext();
+                size--;
+                return;
+            }
+            if (counter == index - 1) {
+                tmp.setNext(tmp.getNext().getNext());
+                size--;
+                return;
+            }
+            counter++;
+            tmp = tmp.getNext();
+        }
     }
 
     public int getSize() {
@@ -107,6 +140,28 @@ public class SinglyLinkedList {
             else tmp = tmp.next;
         }
         return -1;
+    }
+
+    /**
+     * Метод работает только с листами одинаковой длины.
+     * Надо реализовать функционал для разнозначных длин SinglyLinkedList
+     * @param list
+     * @return
+     */
+    public String findLess(SinglyLinkedList list) {
+        Node first = this.getHead();
+        Node second = list.getHead();
+        int counter = 0;
+        if (this.getSize() == list.getSize()) {
+            while (this.getSize() != counter) {
+                if (first.getKey() > second.getKey()) return "second";
+                if (first.getKey() < second.getKey()) return "first";
+                first = first.getNext();
+                second = second.getNext();
+                counter++;
+            }
+        }
+        return "equal";
     }
 
     public void print() {
