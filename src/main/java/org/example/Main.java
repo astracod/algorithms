@@ -9,14 +9,15 @@ public class Main {
         SinglyLinkedList list2 = new SinglyLinkedList();
         list.printMessage("Добавление элементов");
         list.add(4);
-        list.add(5);
-        list.add(7);
+        list.add(2);
+        list.add(1);
         list.print();
         list2.printMessage("Добавление элементов во второй лист");
         list2.add(4);
-        list2.add(5);
-        list2.add(7);
+        list2.add(3);
+        list2.add(1);
         list2.print();
-        System.out.println(list.findLess(list2));
+        SinglyLinkedList s = list.mergeSortingLists(list2);
+        System.out.println("list size : "+ s.getSize());
     }
 }

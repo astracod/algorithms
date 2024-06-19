@@ -1,5 +1,7 @@
 package org.example.MyList;
 
+import java.util.Objects;
+
 public class SinglyLinkedList {
     public static class Node {
         private int key;
@@ -106,7 +108,7 @@ public class SinglyLinkedList {
     }
 
     public void removeByIndex(int index) {
-        if (index > size-1 || this.size == 0) return;
+        if (index > size - 1 || this.size == 0) return;
         Node tmp = head;
         int counter = 0;
         while (tmp.getNext() != null) {
@@ -133,6 +135,10 @@ public class SinglyLinkedList {
         return head;
     }
 
+    public void setHead(Node newNode){
+        head = newNode;
+    }
+
     public int contain(int value) {
         Node tmp = head;
         while (tmp != null) {
@@ -142,26 +148,80 @@ public class SinglyLinkedList {
         return -1;
     }
 
-    /**
-     * Метод работает только с листами одинаковой длины.
-     * Надо реализовать функционал для разнозначных длин SinglyLinkedList
-     * @param list
-     * @return
-     */
     public String findLess(SinglyLinkedList list) {
         Node first = this.getHead();
         Node second = list.getHead();
-        int counter = 0;
-        if (this.getSize() == list.getSize()) {
-            while (this.getSize() != counter) {
-                if (first.getKey() > second.getKey()) return "second";
-                if (first.getKey() < second.getKey()) return "first";
+        while (first != null && second != null) {
+            if (first.getKey() > second.getKey()) return "second";
+            if (first.getKey() < second.getKey()) return "first";
+            first = first.getNext();
+            second = second.getNext();
+        }
+        if (first == null && second == null) return "equal";
+        if (first != null) return "second";
+        return "first";
+    }
+
+    public SinglyLinkedList mergeSortingLists(SinglyLinkedList list) {
+        Node first = this.getHead();
+        Node second = list.getHead();
+        SinglyLinkedList lastList = new SinglyLinkedList();
+        Node ll;
+        if (first.getKey() <= second.getKey()) {
+            lastList.setHead(new Node(first.getKey(), null));
+            ll = lastList.getHead();
+            first = first.getNext();
+            lastList.size++;
+        } else {
+            lastList.setHead(new Node(second.getKey(), null));
+            ll = lastList.getHead();
+            second = second.getNext();
+            lastList.size++;
+        }
+        int counter = 1;
+        while (first.getNext() != null && second.getNext() != null) {
+            if (first.getKey() <= second.getKey()) {
+                Objects.requireNonNull(ll).setNext(new Node(first.getKey()));
+                ll = ll.getNext();
+                lastList.size++;
                 first = first.getNext();
+            } else {
+                ll.setNext(new Node(second.getKey()));
+                ll = ll.getNext();
+                lastList.size++;
                 second = second.getNext();
-                counter++;
+            }
+
+            ++counter;
+            if (counter == this.size && first.getKey() <= second.getKey()){
+                Objects.requireNonNull(ll).setNext(new Node(first.getNext().getKey()));
+                lastList.size++;
+                ll = ll.getNext();
+            }
+            else if (counter == list.size && (first.getKey() > second.getKey())){
+                Objects.requireNonNull(ll).setNext(new Node(second.getNext().getKey()));
+                lastList.size++;
+                ll = ll.getNext();
             }
         }
-        return "equal";
+
+        if (first.getNext() != null) {
+            while (first.getNext() != null) {
+                Objects.requireNonNull(ll).setNext(new Node(first.getKey()));
+                lastList.size++;
+                first = first.getNext();
+                ll = ll.getNext();
+            }
+        } else {
+            while (second.getNext() != null) {
+                ll.setNext(new Node(second.getKey()));
+                lastList.size++;
+                second = second.getNext();
+                ll = ll.getNext();
+            }
+        }
+        lastList.print();
+        return lastList;
     }
 
     public void print() {
