@@ -1,5 +1,7 @@
 package org.example.MyList;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 public class SinglyLinkedList {
@@ -22,10 +24,6 @@ public class SinglyLinkedList {
             return key;
         }
 
-        public void setKey(int key) {
-            this.key = key;
-        }
-
         public Node getNext() {
             return next;
         }
@@ -45,6 +43,23 @@ public class SinglyLinkedList {
     public SinglyLinkedList() {
         head = null;
         size = 0;
+    }
+
+    public SinglyLinkedList(SinglyLinkedList list) {
+        if (list.head == null) return;
+
+        Node l1 = list.head;
+        this.head = new Node(l1.getKey());
+        Node copy = this.getHead();
+        l1 = l1.getNext();
+        this.size++;
+
+        while (l1 != null) {
+            copy.setNext(new Node(l1.getKey()));
+            copy = copy.getNext();
+            this.size++;
+            l1 = l1.getNext();
+        }
     }
 
     public void add(int k) {
@@ -135,7 +150,7 @@ public class SinglyLinkedList {
         return head;
     }
 
-    public void setHead(Node newNode){
+    public void setHead(Node newNode) {
         head = newNode;
     }
 
@@ -163,25 +178,27 @@ public class SinglyLinkedList {
     }
 
     public SinglyLinkedList mergeSortingLists(SinglyLinkedList list) {
+        if (list.head == null) return new SinglyLinkedList();
         Node first = this.getHead();
         Node second = list.getHead();
         SinglyLinkedList lastList = new SinglyLinkedList();
         Node ll;
+
         if (first.getKey() <= second.getKey()) {
-            lastList.setHead(new Node(first.getKey(), null));
+            lastList.head = new Node(first.getKey());
             ll = lastList.getHead();
             first = first.getNext();
             lastList.size++;
         } else {
-            lastList.setHead(new Node(second.getKey(), null));
+            lastList.setHead(new Node(second.getKey()));
             ll = lastList.getHead();
             second = second.getNext();
             lastList.size++;
         }
-        int counter = 1;
-        while (first.getNext() != null && second.getNext() != null) {
+
+        while (first != null && second != null) {
             if (first.getKey() <= second.getKey()) {
-                Objects.requireNonNull(ll).setNext(new Node(first.getKey()));
+                ll.setNext(new Node(first.getKey()));
                 ll = ll.getNext();
                 lastList.size++;
                 first = first.getNext();
@@ -191,36 +208,23 @@ public class SinglyLinkedList {
                 lastList.size++;
                 second = second.getNext();
             }
-
-            ++counter;
-            if (counter == this.size && first.getKey() <= second.getKey()){
-                Objects.requireNonNull(ll).setNext(new Node(first.getNext().getKey()));
-                lastList.size++;
-                ll = ll.getNext();
-            }
-            else if (counter == list.size && (first.getKey() > second.getKey())){
-                Objects.requireNonNull(ll).setNext(new Node(second.getNext().getKey()));
-                lastList.size++;
-                ll = ll.getNext();
-            }
         }
 
-        if (first.getNext() != null) {
-            while (first.getNext() != null) {
-                Objects.requireNonNull(ll).setNext(new Node(first.getKey()));
+        if (first != null) {
+            while (first != null) {
+                ll.setNext(new Node(first.getKey()));
                 lastList.size++;
                 first = first.getNext();
                 ll = ll.getNext();
             }
         } else {
-            while (second.getNext() != null) {
+            while (second != null) {
                 ll.setNext(new Node(second.getKey()));
                 lastList.size++;
                 second = second.getNext();
                 ll = ll.getNext();
             }
         }
-        lastList.print();
         return lastList;
     }
 
