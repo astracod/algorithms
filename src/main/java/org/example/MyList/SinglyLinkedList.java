@@ -1,9 +1,5 @@
 package org.example.MyList;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-
 public class SinglyLinkedList {
     public static class Node {
         private int key;
