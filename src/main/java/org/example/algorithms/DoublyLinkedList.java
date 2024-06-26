@@ -128,27 +128,21 @@ public class DoublyLinkedList {
     public void addToSorted(int k) {
         Node tmp = head;
         Node last = tail;
-        if (k <= tmp.key) {
+        if (head == null) {
+            addFirst(k);
+        } else if (k <= tmp.key) {
             tmp.setPrev(new Node(null, k, tmp));
             head = tmp.getPrev();
-            size++;
-            return;
-        }
-        if (k >= last.key) {
-            Node newNode = new Node(tmp, k, null);
-            tail.setNext(newNode);
-            Node pr = tail;
+        } else if (k >= last.key) {
+            tail.setNext(new Node(last, k, null));
             tail = tail.getNext();
-            tail.setPrev(pr);
-        }
-        while (tmp != null && tmp.getKey() <= k) {
-            if (tmp.next != null && tmp.next.key > k) {
-                Node newNode = new Node(tmp, k, tmp.getNext());
-                tmp.setNext(newNode);
-                tmp.next.setPrev(newNode);
-                break;
+        } else {
+            while (tmp != null &&  tmp.getKey() < k) {
+                tmp = tmp.getNext();
             }
-            tmp = tmp.getNext();
+            Node newNode = new Node(tmp.getPrev(), k, tmp);
+            tmp.setPrev(newNode);
+            newNode.getPrev().setNext(newNode);
         }
         size++;
     }
@@ -156,49 +150,83 @@ public class DoublyLinkedList {
     public void remove(int k) {
         Node tmp = head;
         Node lastNode = tail;
-        if (lastNode.key == k) {
+        if (tmp.key == k && tmp.next == null) {
+            head = null;
+            tail = null;
+            size = 0;
+        } else if (lastNode.key == k) {
             lastNode.getPrev().setNext(null);
             tail = lastNode.getPrev();
-        }
-        while (tmp != null) {
-            if (tmp.key == k) {
-                if (tmp.getPrev() == null) {
-                    tmp.getNext().setPrev(null);
-                    tmp = tmp.getNext();
-                    head = tmp;
-                }
-                if (tmp != head && tmp != tail) {
-                    tmp.getPrev().setNext(tmp.getNext());
-                    tmp.getNext().setPrev(tmp.getPrev());
-                }
-            }
+        } else if (tmp.key == k) {
+            tmp.getNext().setPrev(null);
             tmp = tmp.getNext();
+            head = tmp;
+        } else {
+            while (tmp != null && tmp.key != k) {
+                tmp = tmp.getNext();
+            }
+            if (tmp != null) {
+                tmp.getPrev().setNext(tmp.getNext());
+                tmp.getNext().setPrev(tmp.getPrev());
+            }
         }
         size--;
     }
 
     public void removeByIndex(int i) {
+        if (head == null) return;
+        if (this.size - 1 < i) return;
         Node tmp = head;
-        if (i == 0) {
-            tmp.getNext().setPrev(null);
-            head = tmp.getNext();
-            size--;
-            return;
-        }
-        if (i == this.size - 1) {
-            tmp.getPrev().setNext(null);
-            tail = tmp.getPrev();
-            size--;
-            return;
-        }
-        while (i >= 0) {
-            if (i == 0) {
-                tmp.getPrev().setNext(tmp.getNext());
-                tmp.getNext().setPrev(tmp.getPrev());
-            }
+        while (i > 0) {
             tmp = tmp.getNext();
             i--;
         }
+        if (tmp.getPrev() != null) {
+            tmp.getPrev().setNext(tmp.getNext());
+        } else {
+            head = tmp.getNext();
+        }
+        if (tmp.getNext() != null) {
+            tmp.getNext().setPrev(tmp.getPrev());
+        } else {
+            tail = tmp.getPrev();
+        }
+    }
+
+    public void swap(DoublyLinkedList list2) {
+        Node firstHead = this.head;
+        Node secondHead = list2.head;
+        Node firstTail = this.tail;
+        Node secondTail = list2.tail;
+
+        Node bufFH = firstHead;
+        Node bufFT = firstTail;
+        firstHead = secondHead;
+        firstTail = secondTail;
+
+        secondHead = bufFH;
+        secondTail = bufFT;
+
+        System.out.println("----first list-------");
+        while (firstHead != null){
+            System.out.print(firstHead.key+ " ");
+            firstHead = firstHead.next;
+        }
+        System.out.println();
+        System.out.println("----second list-------");
+        while (secondHead != null){
+            System.out.print(secondHead.key+" ");
+            secondHead = secondHead.next;
+        }
+    }
+
+    public boolean isSorted(){
+        Node tmp = head;
+        while (tmp.next != null){
+            if (tmp.key > tmp.next.key) return false;
+            tmp = tmp.getNext();
+        }
+        return true;
     }
 
 }
@@ -208,20 +236,17 @@ class SolutionDoublyList {
         DoublyLinkedList l1 = new DoublyLinkedList();
         DoublyLinkedList l2 = new DoublyLinkedList();
 
-        System.out.println("----Method Add-----------");
-        l1.add(2);
+        System.out.println("----Method Swap-----------");
+        l1.add(1);
         l1.add(3);
         l1.add(5);
         l1.print();
-        System.out.println("----Method addToSorted-----------");
-        l1.addToSorted(4);
-        l1.addToSorted(6);
-        l1.addToSorted(1);
-        l1.addToSorted(1);
-        l1.print();
-        System.out.println("----Method removeByIndex-----------");
-        l1.removeByIndex(2);
-        l1.removeByIndex(0);
-        l1.print();
+        System.out.println("--------2 list-----------");
+        l2.add(8);
+        l2.add(4);
+        l2.add(5);
+        l2.print();
+        System.out.println(l1.isSorted());
+
     }
 }
