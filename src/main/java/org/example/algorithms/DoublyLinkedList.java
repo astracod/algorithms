@@ -137,7 +137,7 @@ public class DoublyLinkedList {
             tail.setNext(new Node(last, k, null));
             tail = tail.getNext();
         } else {
-            while (tmp != null &&  tmp.getKey() < k) {
+            while (tmp != null && tmp.getKey() < k) {
                 tmp = tmp.getNext();
             }
             Node newNode = new Node(tmp.getPrev(), k, tmp);
@@ -194,40 +194,80 @@ public class DoublyLinkedList {
     }
 
     public void swap(DoublyLinkedList list2) {
-        Node firstHead = this.head;
-        Node secondHead = list2.head;
-        Node firstTail = this.tail;
-        Node secondTail = list2.tail;
+        int bufSize = list2.size;
+        list2.size = this.size;
+        this.size = bufSize;
 
-        Node bufFH = firstHead;
-        Node bufFT = firstTail;
-        firstHead = secondHead;
-        firstTail = secondTail;
+        Node buf = list2.head;
+        list2.head = this.head;
+        this.head = buf;
 
-        secondHead = bufFH;
-        secondTail = bufFT;
-
-        System.out.println("----first list-------");
-        while (firstHead != null){
-            System.out.print(firstHead.key+ " ");
-            firstHead = firstHead.next;
-        }
-        System.out.println();
-        System.out.println("----second list-------");
-        while (secondHead != null){
-            System.out.print(secondHead.key+" ");
-            secondHead = secondHead.next;
-        }
+        buf= list2.tail;
+        list2.tail = this.tail;
+        this.tail = buf;
     }
 
-    public boolean isSorted(){
+    public boolean isSorted() {
         Node tmp = head;
-        while (tmp.next != null){
+        while (tmp.next != null) {
             if (tmp.key > tmp.next.key) return false;
             tmp = tmp.getNext();
         }
         return true;
     }
+
+    public void printRec(boolean res) {
+        Node tmp = this.head;
+        if (this.size == 0) return;
+        if (res) {
+            if (tmp != null) {
+                printRec(tmp);
+            }
+        } else {
+            if (tmp != null) {
+                revertPrintRec(tmp);
+            }
+        }
+    }
+
+    private void printRec(Node node) {
+        if (node != null) {
+            System.out.print(node.key + " ");
+            printRec(node.next);
+        }
+    }
+
+    private void revertPrintRec(Node node) {
+        if (node != null) {
+            printRec(node.next);
+        }
+        System.out.print(node.key + " ");
+    }
+
+    public void printInt(int i) {
+        int denominator = 10;
+        int num = i % denominator;
+        int numerator = i / denominator;
+
+        System.out.print(num+" ");
+
+        if (numerator > 0) {
+            printInt(numerator);
+        }
+    }
+
+    public void revertPrintInt(int i) {
+        int denominator = 10;
+        int num = i % denominator;
+        int numerator = i / denominator;
+
+        if (numerator > 0) {
+            revertPrintInt(numerator);
+        }
+
+        System.out.print(num+" ");
+    }
+
 
 }
 
@@ -240,13 +280,18 @@ class SolutionDoublyList {
         l1.add(1);
         l1.add(3);
         l1.add(5);
+        l1.add(7);
         l1.print();
         System.out.println("--------2 list-----------");
         l2.add(8);
         l2.add(4);
         l2.add(5);
         l2.print();
-        System.out.println(l1.isSorted());
-
+        System.out.println("----------swap-------------");
+        l1.swap(l2);
+        l1.print();
+        System.out.println(" l1 size : "+ l1.getSize());
+        l2.print();
+        System.out.println(" l2 size : "+ l2.getSize());
     }
 }
