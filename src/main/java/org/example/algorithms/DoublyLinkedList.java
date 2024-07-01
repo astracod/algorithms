@@ -46,6 +46,14 @@ public class DoublyLinkedList {
 
     private Node head;
 
+    public Node getHead() {
+        return head;
+    }
+
+    public Node getTail() {
+        return tail;
+    }
+
     private Node tail;
 
     private int size = 0;
@@ -264,10 +272,8 @@ public class DoublyLinkedList {
         if (numerator > 0) {
             revertPrintInt(numerator);
         }
-
         System.out.print(num+" ");
     }
-
 
 }
 

@@ -224,6 +224,46 @@ public class SinglyLinkedList {
         return lastList;
     }
 
+    public SinglyLinkedList alternateMerger(SinglyLinkedList firstList, SinglyLinkedList secondList) {
+        Node first = firstList.head;
+        Node second = secondList.head;
+        SinglyLinkedList newList = new SinglyLinkedList();
+
+        newList.setHead(new Node(first.getKey()));
+        Node ll = newList.getHead();
+        ll.setNext(new Node(second.getKey()));
+        ll = ll.getNext();
+        first = first.getNext();
+        second = second.getNext();
+        newList.size = newList.size + 2;
+
+        while (first != null && second != null) {
+            ll.setNext(new Node(first.getKey()));
+            ll = ll.getNext();
+            ll.setNext(new Node(second.getKey()));
+            ll = ll.getNext();
+            first = first.getNext();
+            second = second.getNext();
+            newList.size = newList.size + 2;
+        }
+        if (first != null) {
+            while (first != null) {
+                ll.setNext(new Node(first.getKey()));
+                newList.size++;
+                first = first.getNext();
+                ll = ll.getNext();
+            }
+        } else {
+            while (second != null) {
+                ll.setNext(new Node(second.getKey()));
+                newList.size++;
+                second = second.getNext();
+                ll = ll.getNext();
+            }
+        }
+        return newList;
+    }
+
     public void print() {
         Node tmp = head;
         while (tmp != null) {
