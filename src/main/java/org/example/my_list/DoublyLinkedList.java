@@ -1,6 +1,4 @@
-package org.example.algorithms;
-
-import org.example.MyList.SinglyLinkedList;
+package org.example.my_list;
 
 public class DoublyLinkedList {
     public static class Node {

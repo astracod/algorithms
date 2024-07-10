@@ -1,6 +1,6 @@
 package org.example.algorithms;
 
-import java.util.Arrays;
+import org.example.my_list.DoublyLinkedList;
 
 public class Recursion {
     public int binarySearch(int[] a, int p, int r, int x) {
@@ -11,31 +11,6 @@ public class Recursion {
             return binarySearch(a, q + 1, r, x);
         else
             return binarySearch(a, p, q - 1, x);
-    }
-
-    public int guess(int n) {
-        int pick = 6;
-        if (n > pick) {
-            return -1;
-        } else if (n < pick) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     *  LeetCode
-     * @param n
-     * @return
-     */
-    public int guessNumber(int n) {
-        if (guess(n) != 0) {
-            n = guess(n) > 0 ? n + 1 : n - 1;
-            System.out.println("number : "+ n);
-            return guessNumber(n);
-        }
-        return n;
     }
 
     public int findMax(int[] a, int index, int max) {
@@ -55,6 +30,29 @@ public class Recursion {
             return find == node.getKey() ? node.getKey() : -1;
     }
 
+    public int guess(int n) {
+        int pick = 1702766719;
+        if (n > pick) {
+            return -1;
+        } else if (n < pick) {
+            return 1;
+        } else {
+            return pick;
+        }
+    }
+
+    public int guessNumber(int n) {
+        return guessRec(0, n);
+    }
+
+    public int guessRec(int p, int r) {
+        int q = p + (r - p) / 2;
+        int res = guess(q);
+        if (res == 0) return q;
+        if (res == -1) return guessRec(p, q - 1);
+        else return guessRec(q + 1, r);
+    }
+
 
 }
 
@@ -63,7 +61,7 @@ class SolutionRecursiveTasks {
     public static void main(String[] args) {
         int[] numbers = {-5, -3, -2, 1, 2, 3, 4, 5};
         Recursion rec = new Recursion();
-        System.out.println(rec.guessNumber(-10));
+        System.out.println(rec.guessNumber(2126753390));
 
 //        System.out.println(rec.findMax(numbers, 0, 0));
 

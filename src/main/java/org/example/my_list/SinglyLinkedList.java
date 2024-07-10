@@ -1,4 +1,4 @@
-package org.example.MyList;
+package org.example.my_list;
 
 public class SinglyLinkedList {
     public static class Node {
@@ -33,8 +33,6 @@ public class SinglyLinkedList {
     private Node head;
 
     private int size = 0;
-
-    private int index;
 
     public SinglyLinkedList() {
         head = null;

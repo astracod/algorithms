@@ -1,4 +1,4 @@
-package org.example.MyList;
+package org.example.my_list;
 
 import java.util.Arrays;
 

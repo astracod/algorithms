@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.MyList.SinglyLinkedList;
+import org.example.my_list.SinglyLinkedList;
 
 public class Main {
     public static void main(String[] args) {
