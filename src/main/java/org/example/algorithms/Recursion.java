@@ -52,8 +52,6 @@ public class Recursion {
         if (res == -1) return guessRec(p, q - 1);
         else return guessRec(q + 1, r);
     }
-
-
 }
 
 class SolutionRecursiveTasks {

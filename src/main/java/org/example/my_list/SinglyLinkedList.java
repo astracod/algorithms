@@ -11,6 +11,9 @@ public class SinglyLinkedList {
             this.next = next;
         }
 
+        public Node() {
+        }
+
         public Node(int key) {
             this.key = key;
             this.next = null;
@@ -262,6 +265,18 @@ public class SinglyLinkedList {
         return newList;
     }
 
+    public Node removeElements(Node head, int val) {
+        while(head != null && head.key == val){
+            head = head.next;
+        }
+        Node tmp = head;
+        while(tmp != null && tmp.next != null){
+            if(tmp.next.key == val) tmp.next = tmp.next.next;
+            else tmp = tmp.next;
+        }
+        return head;
+    }
+
     public void print() {
         Node tmp = head;
         while (tmp != null) {
@@ -275,3 +290,4 @@ public class SinglyLinkedList {
         System.out.println(message);
     }
 }
+

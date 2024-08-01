@@ -18,7 +18,7 @@ public class QueueTask {
         a[tail] = x;
         if (tail == a.length - 1)
             tail = 0;
-        else{
+        else {
             tail++;
         }
 
@@ -28,25 +28,23 @@ public class QueueTask {
         return ((head == 0 && tail == a.length - 1) || (tail == head - 1));
     }
 
-    public void poll() {
+    public Integer poll() {
+        Integer answer;
         if (isEmpty())
-            System.out.println("Queue underflow");
+            return null;
         else if (head == a.length - 1) {
-            System.out.println(a[head]);
+            answer = a[head];
             head = 0;
         } else {
-            System.out.println(a[head]);
+            answer = a[head];
             head++;
         }
+        return answer;
     }
 
-    public void peek() {
-        if (this.isEmpty()) System.out.println("Queue is clear");
-        else System.out.println(a[head]);
-    }
-
-    public boolean isEmpty() {
-        return head == tail;
+    public int peek() {
+        if (this.isEmpty()) return -1;
+        else return a[head];
     }
 
     public void clear() {
@@ -54,19 +52,58 @@ public class QueueTask {
         head = 0;
         tail = 0;
     }
+
+    public boolean isEmpty() {
+        return head == tail;
+    }
+
+    public QueueTask drunkard(QueueTask first, QueueTask second) {
+        int counter = 0;
+        while (!first.isEmpty() && !second.isEmpty()) {
+            if (first.peek() < second.peek()) {
+                if (second.peek() == 0 && first.peek() > 0) {
+                    second.offer(first.poll());
+                    counter++;
+                }
+                second.offer(first.poll());
+                counter++;
+            } else {
+                if (first.peek() == 0 && second.peek() > 0) {
+                    first.offer(second.poll());
+                    counter++;
+                }
+                first.offer(second.poll());
+                counter++;
+            }
+        }
+        System.out.println("counter " + counter);
+        if (first.isFull()) return first;
+        else return second;
+    }
+
 }
 
 class Solution {
     public static void main(String[] args) {
-        QueueTask queueTask = new QueueTask(5);
-        queueTask.offer(1);
-        queueTask.offer(2);
-        queueTask.offer(3);
-        queueTask.clear();
-        queueTask.offer(4);
-        queueTask.peek();
-        queueTask.poll();
-        System.out.println(queueTask.isEmpty());
+        QueueTask first = new QueueTask(10);
+        QueueTask second = new QueueTask(10);
+        first.offer(1);
+        first.offer(3);
+        first.offer(5);
+        first.offer(7);
+        first.offer(9);
+        second.offer(2);
+        second.offer(4);
+        second.offer(6);
+        second.offer(8);
+        second.offer(0);
+
+        QueueTask answer = first.drunkard(first, second);
+
+        while (!answer.isEmpty()) {
+            System.out.println("result : " + first.poll());
+        }
+
     }
 
 

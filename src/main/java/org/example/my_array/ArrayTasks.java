@@ -1,5 +1,7 @@
 package org.example.my_array;
 
+import java.util.*;
+
 public class ArrayTasks {
 
     /**
@@ -109,34 +111,429 @@ public class ArrayTasks {
         return answer;
     }
 
+    public int[][] merge(int[][] intervals) {
+        if (intervals.length == 1) return intervals;
+        List<int[]> listOfArrays = new ArrayList<>();
+        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));
+        int first = intervals[0][0];
+        int second = intervals[0][1];
+        for (int i = 0; i <= intervals.length - 1; i++) {
+            if (second < intervals[i][0]) {
+                listOfArrays.add(new int[]{first, second});
+                first = intervals[i][0];
+                second = intervals[i][1];
+            }
+            if (second >= intervals[i][0] && second < intervals[i][1]) second = intervals[i][1];
+
+            if (i == intervals.length - 1) listOfArrays.add(new int[]{first, second});
+
+        }
+        int[][] answer = new int[listOfArrays.size()][];
+        for (int i = 0; i < listOfArrays.size(); i++) {
+            answer[i] = listOfArrays.get(i);
+        }
+        return answer;
+    }
+
+    public int[] myCountingSort(int[] a) {
+        int min = 0, max = 0;
+        for (int i = 0; i < a.length; i++) {
+            if (min > a[i]) min = a[i];
+            if (max < a[i]) max = a[i];
+        }
+        int[] c = new int[(max - min) + 1];
+        int[] b = new int[a.length];
+        for (int k = 0; k < c.length; k++) {
+            c[k] = 0;
+        }
+
+        for (int i = 0; i < a.length; i++) {
+            c[a[i] - min]++;
+        }
+        for (int i = 1; i < c.length; i++) {
+            c[i] = c[i] + c[i - 1];
+
+        }
+        for (int i = a.length - 1; i >= 0; i--) {
+            c[a[i] - min]--;
+            b[c[a[i] - min]] = a[i];
+        }
+        return b;
+    }
+
+    public int heightChecker(int[] heights) {
+        int[] sort = myCountingSort(heights);
+        int difference = 0;
+        for (int i = 0; i < heights.length; i++) {
+            if (heights[i] != sort[i]) difference++;
+        }
+        return difference;
+    }
+
+    public int[] relativeSortArray(int[] arr1, int[] arr2) {
+        LinkedHashMap<Integer, Integer> amount = new LinkedHashMap<>();
+        int[] res = new int[arr1.length];
+        for (int i = 0; i < arr2.length; i++) {
+            amount.put(arr2[i], 0);
+        }
+        for (int elem : arr1) {
+            if (amount.containsKey(elem)) amount.put(elem, amount.get(elem) + 1);
+            else amount.put(elem, 1);
+        }
+
+        int index = 0;
+        for (int num : arr2) {
+            int count = amount.get(num);
+            for (int i = 0; i < count; i++) {
+                res[index++] = num;
+            }
+            amount.remove(num);
+        }
+
+        TreeMap<Integer, Integer> sortedMap = new TreeMap<>(amount);
+        for (Map.Entry<Integer, Integer> entry : sortedMap.entrySet()) {
+            int num = entry.getKey();
+            int count = entry.getValue();
+            for (int i = 0; i < count; i++) {
+                res[index++] = num;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * повторяет метод int[] myCountingSort(int[] a), третий выше.
+     *
+     * @param nums
+     * @return
+     */
+    public int[] sort2(int[] nums) {
+        int min = 0, max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (min > nums[i]) min = nums[i];
+            if (max < nums[i]) max = nums[i];
+        }
+        int[] c = new int[(max - min) + 1];
+        int[] b = new int[nums.length];
+
+        for (int i = 0; i < c.length; i++) {
+            c[i] = 0;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            c[nums[i] - min]++;
+        }
+        for (int i = 1; i < c.length; i++) {
+            c[i] = c[i] + c[i - 1];
+        }
+        for (int i = 0; i < nums.length; i++) {
+            c[nums[i] - min]--;
+            b[c[nums[i] - min]] = nums[i];
+        }
+        return b;
+    }
+
+    public void insertionSort(int[] a) {
+        for (int i = 1; i < a.length; i++) {
+            int key = a[i];
+            int j = i - 1;
+            while (j >= 0 && a[j] > key) {
+                a[j + 1] = a[j];
+                j--;
+            }
+            a[j + 1] = key;
+        }
+    }
+
+    /**
+     * LeetCode 561. Array Partition
+     *
+     * @param nums
+     * @return
+     */
+    public int arrayPairSum(int[] nums) {
+        int[] sortArr = sort2(nums);
+        int sum = 0;
+        for (int i = 0; i < sortArr.length; ) {
+            sum += sortArr[i];
+            i = i + 2;
+        }
+        return sum;
+    }
+
+    public int[] numberGame(int[] nums) {
+        ArrayDeque<Integer> alice = new ArrayDeque<>();
+        ArrayDeque<Integer> bob = new ArrayDeque<>();
+        int[] result = new int[nums.length];
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            if (i % 2 == 0) alice.addFirst(nums[i]);
+            else bob.addFirst(nums[i]);
+        }
+        for (int i = 0; i < result.length; i++) {
+            if (i % 2 == 0) result[i] = bob.removeLast();
+            else result[i] = alice.removeLast();
+            ;
+        }
+        return result;
+    }
+
+    public int maxProduct(int[] nums) {
+        Arrays.sort(nums);
+        return (nums[nums.length - 1] - 1) * (nums[nums.length - 2] - 1);
+    }
+
+    public int deleteGreatestValue(int[][] grid) {
+        if (grid.length == 1 && grid[0].length == 1) return grid[0][0];
+        List<PriorityQueue<Integer>> buf = new ArrayList<>();
+        for (int[] arr : grid) {
+            PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> b - a);
+            for (int number : arr) {
+                queue.offer(number);
+            }
+            buf.add(queue);
+        }
+        int maxSum = 0;
+        boolean queuesNotEmpty = true;
+        while (queuesNotEmpty) {
+            queuesNotEmpty = false;
+            Integer maxElement = null;
+            for (PriorityQueue<Integer> queue : buf) {
+                if (!queue.isEmpty()) {
+                    int element = queue.poll();
+                    if (maxElement == null || element > maxElement) maxElement = element;
+                    queuesNotEmpty = true;
+                }
+            }
+            if (maxElement != null) maxSum += maxElement;
+        }
+        return maxSum;
+    }
+
+    public long minSumSquareDiff(int[] nums1, int[] nums2, int k1, int k2) {
+        int[] diff = new int[100_001];
+        long total = 0;
+        int currentValue;
+        int maxIndex = 0;
+        long result = 0;
+        long bonus = k1 + k2;
+
+        for (int i = 0; i < nums1.length; i++) {
+            currentValue = Math.abs(nums1[i] - nums2[i]);
+            if (currentValue > 0) {
+                diff[currentValue]++;
+                total += currentValue;
+                maxIndex = Math.max(maxIndex, currentValue);
+            }
+        }
+
+        if (total <= bonus) return 0;
+
+        for (int i = maxIndex; i > 0 && bonus > 0; i--) {
+            if (diff[i] > 0) {
+                if (diff[i] > bonus) {
+                    diff[i] -= bonus;
+                    diff[i - 1] += bonus;
+                    bonus = 0;
+                } else {
+                    diff[i - 1] += diff[i];
+                    bonus -= diff[i];
+                    diff[i] = 0;
+                }
+            }
+        }
+
+        for (int i = 0; i <= maxIndex; i++) {
+            if (diff[i] > 0) {
+                result += (long) (Math.pow((long) i, 2)) * diff[i];
+            }
+        }
+        return result;
+    }
+
+    private int partition(int[] a, int p, int r) {
+        int buf, i = p - 1;
+        for (int j = p; j < r; j++) {
+            if (a[j] < a[r]) {
+                i++;
+                buf = a[j];
+                a[j] = a[i];
+                a[i] = buf;
+            }
+        }
+        buf = a[i + 1];
+        a[i + 1] = a[r];
+        a[r] = buf;
+        return (i + 1);
+    }
+
+    private void recQuickSort(int[] a, int p, int r) {
+        if (p < r) {
+            int q = partition(a, p, r);
+            recQuickSort(a, p, q - 1);
+            recQuickSort(a, q + 1, r);
+        }
+    }
+
+    public void myQuickSort(int[] arr) {
+        recQuickSort(arr, 0, arr.length - 1);
+    }
+
+    public List<String> topKFrequent(String[] words, int k) {
+        HashMap<String, Integer> map = new HashMap<>();
+        TreeMap<Integer, List<String>> integerSortMap = new TreeMap<>(Collections.reverseOrder());
+
+        List<String> list = new ArrayList<>();
+        List<String> res = new ArrayList<>();
+
+        for (String word : words) {
+            map.merge(word, 1, Integer::sum);
+        }
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            List<String> list1 = integerSortMap.get(entry.getValue());
+            if (list1 != null) list1.add(entry.getKey());
+            else {
+                list1 = new ArrayList<>();
+                list1.add(entry.getKey());
+                integerSortMap.put(entry.getValue(), list1);
+            }
+        }
+        for (Map.Entry<Integer, List<String>> integerListEntry : integerSortMap.entrySet()) {
+            List<String> values = integerListEntry.getValue();
+            Collections.sort(values);
+            list.addAll(values);
+        }
+        for (int i = 0; i < list.size() && k > 0; i++) {
+            res.add(list.get(i));
+            k--;
+        }
+
+        return res;
+    }
+
+    public int[] topKFrequent(int[] nums, int k) {
+        if (nums.length == 1 && k == 1) return new int[]{nums[0]};
+
+        Map<Integer, Integer> countingMap = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            countingMap.merge(nums[i], 1, Integer::sum);
+        }
+
+        if (nums.length == countingMap.size()) return nums;
+
+        List<Integer> resultList = new ArrayList<>();
+
+        TreeMap<Integer, List<Integer>> treeMap = new TreeMap<>(Collections.reverseOrder());
+        for (Map.Entry<Integer, Integer> entry : countingMap.entrySet()) {
+            Integer key = entry.getValue();
+            Integer value = entry.getKey();
+            treeMap.computeIfAbsent(key, k1 -> new ArrayList<>()).add(value);
+        }
+
+        for (Map.Entry<Integer, List<Integer>> entry : treeMap.entrySet()) {
+            resultList.addAll(entry.getValue());
+        }
+
+        return resultList.stream()
+                .limit(k)
+                .mapToInt(i -> i)
+                .toArray();
+    }
+
+    public class KNode {
+        public String word;
+        public int amount;
+
+        public KNode(String word, int amount) {
+            this.word = word;
+            this.amount = amount;
+        }
+
+        @Override
+        public String toString() {
+            return word + " : " + amount;
+        }
+    }
+
+    public List<String> topKFrequentStringWithQueue(String[] words, int k) {
+        HashMap<String, Integer> map = new HashMap<>();
+
+        for (String word : words) {
+            map.merge(word, 1, Integer::sum);
+        }
+
+        PriorityQueue<Map.Entry<String, Integer>> queue = new PriorityQueue<>(
+                (entry1, entry2) -> {
+                    int valueResult = Integer.compare(entry2.getValue(), entry1.getValue());
+                    if (valueResult != 0) {
+                        return valueResult;
+                    } else {
+                        return entry1.getKey().compareTo(entry2.getKey());
+                    }
+                }
+        );
+        queue.addAll(map.entrySet());
+        List<String> list = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            Map.Entry<String, Integer> entry = queue.poll();
+            if (k > 0) {
+                list.add(entry.getKey());
+                k--;
+            }
+        }
+        return list;
+    }
+
+    public int[] topKFrequentIntegerWithQueue(int[] nums, int k) {
+        if (nums.length == 1 && k == 1) return new int[]{nums[0]};
+
+        Map<Integer, Integer> countingMap = new HashMap<>();
+        for (int num : nums) {
+            countingMap.merge(num, 1, Integer::sum);
+        }
+
+        if (nums.length == countingMap.size()) return nums;
+
+        PriorityQueue<Map.Entry<Integer, Integer>> queue = new PriorityQueue<>(
+                (entry1, entry2) -> Integer.compare(entry2.getValue(), entry1.getValue()));
+
+        queue.addAll(countingMap.entrySet());
+        int[] resultArr = new int[k];
+        int i = 0;
+        while (!queue.isEmpty()) {
+            Map.Entry<Integer, Integer> entry = queue.poll();
+            if (k > 0) {
+                resultArr[i] = entry.getKey();
+                i++;
+                k--;
+            }
+        }
+        return resultArr;
+    }
 }
+
 
 class Solutions {
     public static void main(String[] args) {
-        int[] nums = new int[]{3, 4, 5, 1, 2};
-        int[] nums1 = new int[]{4, 5, 6, 7, 0, 1, 2};
-        int[] nums2 = new int[]{11, 13, 15, 17};
-        int[] nums3 = new int[]{2, 1};
-        int[] nums4 = new int[]{1, 2};
-        int[] nums5 = new int[]{1, 2, 3, 4, 5};
-        int[] nums6 = new int[]{5, 1, 2, 3, 4};
-//        int[] nums3 = new int[]{2, 5, 6, 0, 0, 1, 2};
-//        int[] nums4 = new int[]{1, 0, 1, 1, 1};
-//        int[] nums5 = new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 13, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-//        int[][] c = new int[][]{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 60}};
-        ArrayTasks tasks = new ArrayTasks();
-        System.out.println(tasks.findMin(nums6));
-//        int[] b = tasks.findMaxAndMin(a);
-//
-//        System.out.println(Arrays.stream(b)
-//                .mapToObj(String::valueOf)
-//                .collect(Collectors.joining(", "))
-//        );
 
-//        System.out.println(tasks.searchMatrix(c, 16));
-//        System.out.println(tasks.searchToArray(nums, 3));
-//        System.out.println(tasks.findMin(nums1));
-//        System.out.println("Before P " + p + " Q " + q + " r " + r);
-//        System.out.println("Before val P " + nums[p] + " Q " + nums[q] + " r " + nums[r]+" min "+ min);
+        ArrayTasks tasks = new ArrayTasks();
+//        int[] nums1 = new int[]{1, 4, 10, 12}; // 10, 5 | 1,1
+//        int[] nums2 = new int[]{5, 8, 6, 9};
+//        int[] nums1 = new int[]{1,2,3,4};
+//        int[] nums2 = new int[]{2,10,20,19};
+//        int[] nums1 = new int[]{7,11,4,19,11,5,6,1,8};
+//        int[] nums2 = new int[]{4,7,6,16,12,9,10,2,10};
+//        int[] nums1 = new int[]{18, 4, 8, 19, 13, 8};
+//        int[] nums2 = new int[]{18, 11, 8, 2, 13, 15};
+//        System.out.println(tasks.minSumSquareDiff(nums1, nums2, 1, 1));
+
+//        int[] arr = new int[]{100, 5, 0, -2, 7, -5};
+//        tasks.myQuickSort(arr);
+//        System.out.println(Arrays.toString(arr));
+        String[] strings = new String[]{"i", "love", "leetcode", "i", "love", "coding"};
+//        List<String> strings1 = tasks.topKFrequentStringWithQueue(strings, 2);
+//        System.out.println(strings1);
+        int[] inside = new int[]{1, 1, 1, 2, 2, 3};
+        System.out.println(Arrays.toString(tasks.topKFrequentIntegerWithQueue(inside, 2)));
+
     }
 }
