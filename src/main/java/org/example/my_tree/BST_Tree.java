@@ -60,6 +60,7 @@ public class BST_Tree {
             tmp = tmp.parent;
             tmp.right = null;
         }
+        size--;
     }
 
     public void print() throws InterruptedException {
