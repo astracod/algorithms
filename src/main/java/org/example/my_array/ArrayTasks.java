@@ -1,6 +1,7 @@
 package org.example.my_array;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ArrayTasks {
 
@@ -509,31 +510,721 @@ public class ArrayTasks {
         }
         return resultArr;
     }
-}
 
+    public List<Integer> partitionLabels(String s) {
+        List<Integer> answer = new ArrayList<>();
+        HashMap<Character, Integer> map = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            map.put(s.charAt(i), i);
+        }
+        int left = 0, right = 0;
+        for (int i = 0; i < s.length(); i++) {
+            right = Math.max(right, map.get(s.charAt(i)));
+            if (i == right) {
+                answer.add(right - left + 1);
+                left = right + 1;
+            }
+        }
+
+        return answer;
+    }
+
+    public int countPairs(List<Integer> nums, int target) {
+        List<List<Integer>> listOfPair = new ArrayList<>();
+        for (int first = 0; first < nums.size() - 1; first++) {
+            for (int last = first + 1; last < nums.size(); last++) {
+                if (nums.get(first) + nums.get(last) < target)
+                    listOfPair.add(List.of(nums.get(first), nums.get(last)));
+            }
+        }
+        return listOfPair.size();
+    }
+
+    public String reversePrefix(String word, char ch) {
+        char[] charArr = word.toCharArray();
+        int right = 0;
+        for (int i = 0; i < charArr.length; i++) {
+            if (charArr[i] == ch) {
+                right = i;
+                break;
+            }
+        }
+        char buf;
+        for (int left = 0; left < right; left++, right--) {
+            buf = charArr[left];
+            charArr[left] = charArr[right];
+            charArr[right] = buf;
+        }
+        return String.valueOf(charArr);
+    }
+
+    public int maximumStrongPairXor(int[] nums) {
+        int max = 0;
+        for (int first = 0; first < nums.length; first++) {
+            for (int last = first; last < nums.length; last++) {
+                int dif = Math.abs(nums[first] - nums[last]);
+                int min = Math.min(nums[first], nums[last]);
+                if (dif <= min) {
+                    if ((nums[first] ^ nums[last]) > max) max = nums[first] ^ nums[last];
+                }
+            }
+        }
+        return max;
+    }
+
+    public int countKConstraintSubstrings(String s, int k) {
+        int max = 0, one = 0, two = 0;
+        for (int first = 0; first < s.length(); first++) {
+            for (int last = first; last < s.length(); last++) {
+                if (s.charAt(last) == '0') one++;
+                else two++;
+                if ((one <= k || two <= k)) {
+                    max++;
+                }
+            }
+            one = 0;
+            two = 0;
+        }
+        return max;
+    }
+
+    public int countGoodSubstrings(String s) {
+        int count = 0;
+        for (int a = 0, b = 1, c = 2; c < s.toCharArray().length; a++, b++, c++) {
+            if (s.charAt(a) != s.charAt(b) && s.charAt(b) != s.charAt(c) && s.charAt(a) != s.charAt(c)) count++;
+        }
+        return count;
+    }
+
+    public int numberOfAlternatingGroups(int[] colors) {
+        int count = 0;
+        int zeroPoint = colors[0];
+        int firstpoint = colors[1];
+        int[] newArr = new int[colors.length + 2];
+        for (int i = 0; i < colors.length; i++) {
+            newArr[i] = colors[i];
+        }
+        newArr[colors.length] = zeroPoint;
+        newArr[colors.length + 1] = firstpoint;
+        for (int a = 0, b = 1, c = 2; c < newArr.length; a++, b++, c++) {
+            if (newArr[a] != newArr[b] && newArr[b] != newArr[c]) count++;
+        }
+        return count;
+    }
+
+    public int findCenter(int[][] edges) {
+        int center = 0;
+        int i2 = 1;
+        for (int i = 0; i < edges[0].length; i++) {
+            for (int i1 = 0; i1 < edges[i2].length; i1++) {
+                if (edges[0][i] == edges[i2][i1]) {
+                    center = edges[i2][i1];
+                    if (i2 + 1 <= edges.length - 1) i2++;
+                }
+            }
+        }
+        return center;
+    }
+
+    public int minSwaps(int[] nums) {
+        int lengthWindow = Arrays.stream(nums).sum();// считаем количество 1 в массиве
+        int amountOne = 0; // переменная для подсчета единиц в скользящем окне
+
+        for (int i = 0; i < lengthWindow; i++) {
+            amountOne += nums[i]; // подсчет количества 1 в первом скользящем окне
+        }
+        int maxSwap = amountOne; // инициализация количества 1 в каждом скользящем последущем окне
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[(lengthWindow + i) % nums.length] == 1)
+                amountOne++; // прибавляем в новом правом индексе если значение 1
+            if (nums[i] == 1) amountOne--; // удаляем из левого индекса скользящего окна если значение == 1
+            maxSwap = Math.max(maxSwap, amountOne); // обновляем состояние переменной единиц в скользящем окне
+        }
+        return lengthWindow - maxSwap; // вычитаем из длины скользящего окна максимальное количество единиц
+    }
+
+    boolean isPalindrome(String s) {
+        int start = 0;
+        int end = s.length() - 1;
+        int middle = (end - start) / 2;
+        while (start < middle) {
+            if (s.charAt(start) != s.charAt(end)) return false;
+            else {
+                start++;
+                end--;
+            }
+        }
+        return true;
+    }
+
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            int left = i + 1;
+            int right = nums.length - 1;
+
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                if (sum < 0) {
+                    left++;
+                } else if (sum > 0) {
+                    right--;
+                } else {
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+
+                    while (left < right && nums[left] == nums[left + 1]) {
+                        left++;
+                    }
+
+                    while (left < right && nums[right] == nums[right - 1]) {
+                        right--;
+                    }
+
+                    left++;
+                    right--;
+                }
+            }
+        }
+        return result;
+    }
+
+    public int[] pivotArray(int[] nums, int pivot) {
+        int amountPivot = 0;
+        List<Integer> after = new LinkedList<>();
+        int[] result = new int[nums.length];
+        int i = 0;
+        for (int num : nums) {
+            if (num == pivot) amountPivot++;
+            if (num < pivot) result[i++] = num;
+            if (num > pivot) after.add(num);
+        }
+
+        for (int i1 = 0; i1 < amountPivot; i1++) {
+            result[i++] = pivot;
+        }
+
+        for (Integer integer : after) {
+            result[i++] = integer;
+        }
+        return result;
+    }
+
+    public double minimumAverage(int[] nums) {
+        Arrays.sort(nums);
+        double minResult = 1000000000000F;
+        for (int i = 0, j = nums.length - 1; i < j; i++, j--) {
+            double min = ((double) nums[i] + nums[j]) / 2;
+            if (minResult > min) minResult = min;
+        }
+        return minResult;
+    }
+
+    public int arithmeticTriplets(int[] nums, int diff) {
+        int amountTriplets = 0;
+        HashSet<Integer> allNumbers = new HashSet<>();
+        for (int num : nums) {
+            allNumbers.add(num);
+        }
+        for (int i = 0, j = i + 1; j < nums.length; ) {
+            int d = nums[j] - nums[i];
+            if (d == diff) {
+                int searchValue = nums[j] + d;
+                boolean res = allNumbers.contains(searchValue);
+                if (res) amountTriplets++;
+            }
+            if (d < diff) j++;
+            else i++;
+        }
+        return amountTriplets;
+    }
+
+    public String firstPalindrome(String[] words) {
+        boolean isPalindrome = true;
+        for (String word : words) {
+            if (word.length() == 1) return word;
+            for (int i = 0, j = word.length() - 1; i < j; i++, j--) {
+                if (word.charAt(i) != word.charAt(j)) {
+                    isPalindrome = false;
+                    break;
+                }
+            }
+            if (isPalindrome) return word;
+            isPalindrome = true;
+        }
+        return "";
+    }
+
+    public String reverseWords(String s) {
+        String[] arr = s.split(" ");
+        StringBuilder answer = new StringBuilder();
+        for (String s1 : arr) {
+            char[] a = s1.toCharArray();
+            for (int i = 0, j = a.length - 1; i < a.length / 2; i++, j--) {
+                char buf = a[i];
+                a[i] = a[j];
+                a[j] = buf;
+            }
+            answer.append(a);
+            if (s.length() > answer.length()) answer.append(" ");
+        }
+        return answer.toString();
+    }
+
+    public int[][] flipAndInvertImage(int[][] image) {
+        int[][] answer = new int[image.length][image[0].length];
+        for (int i = 0; i < image.length; i++) {
+            System.out.println(Arrays.toString(image[i]));
+            for (int i1 = image[i].length - 1, j = 0; i1 >= 0; i1--, j++) {
+                if (image[i][i1] == 0) answer[i][j] = 1;
+                else answer[i][j] = 0;
+            }
+        }
+        return answer;
+    }
+
+    public int[] decrypt(int[] code, int k) {
+        int[] answer = new int[code.length];
+        int[] workArr = new int[0];
+        if (k == 0) return answer;
+        if (k > 0) {
+            workArr = new int[code.length + Math.abs(k - 1)];
+            System.arraycopy(code, 1, workArr, 0, code.length - 1);
+            System.arraycopy(code, 0, workArr, code.length - 1, k);
+        }
+        if (k < 0) {
+            workArr = new int[code.length + Math.abs(k)];
+            System.arraycopy(code, code.length - (Math.abs(k)), workArr, 0, Math.abs(k));
+            System.arraycopy(code, 0, workArr, Math.abs(k), code.length);
+        }
+        int sumOfWindow = 0;
+        int index = 0;
+        for (int i = 0; i < workArr.length - (Math.abs(k) - 1); i++, index++) {
+            for (int j = i; j < (Math.abs(k) + i) && j < workArr.length; j++) {
+                sumOfWindow += workArr[j];
+            }
+            if (index < code.length) answer[index] = sumOfWindow;
+            sumOfWindow = 0;
+        }
+        return answer;
+    }
+
+    public int maxArea(int[] height) {
+        int left = 0;
+        int right = height.length - 1;
+        int max = 0;
+        while (left < right) {
+            int res = (Math.min(height[left], height[right]) * (right - left));
+            max = Math.max(max, res);
+            if (height[left] < height[right]) left++;
+            else right--;
+        }
+        return max;
+    }
+
+    public int characterReplacement(String s, int k) {
+        int maxInCount = 0, maxWindow = 0, lenWindow, count;
+        int[] c = new int[26];//  длина размером латинского алфавита
+        for (int first = 0, last = 0; last < s.length(); last++) {
+            c[s.charAt(last) - 'A']++;
+            count = c[s.charAt(last) - 'A'];
+            maxInCount = Math.max(maxInCount, count);
+            lenWindow = last - first + 1;
+
+            if ((lenWindow - maxInCount) > k) {
+                c[s.charAt(first) - 'A']--;
+                first++;
+            }
+
+            maxWindow = Math.max(maxWindow, last - first + 1);
+        }
+        return maxWindow;
+    }
+
+    public int maximumLengthSubstring(String s) {
+        int[] c = new int[26];
+        int max = 0;
+        for (int left = 0, right = 0; right < s.length(); right++) {
+            c[s.charAt(right) - 'a']++;
+            while (c[s.charAt(right) - 'a'] > 2) {
+                c[s.charAt(left) - 'a']--;
+                left++;
+            }
+            max = Math.max(max, (right - left + 1));
+        }
+        return max;
+    }
+
+    public int findJudge(int n, int[][] trust) {
+        if (n == 1) return 1;
+        if (trust.length == 0) return -1;
+
+        int judge = -1, foundKey = 0, maxValue = 0;
+        Set<Integer> first = new HashSet<>();
+        Map<Integer, Integer> second = new HashMap<>();
+
+        for (int[] ints : trust) {
+            first.add(ints[0]);
+            for (int i1 = 1; i1 < ints.length; i1++) {
+                second.merge(ints[i1], 1, Integer::sum);
+            }
+        }
+
+        if (first.size() == n) return -1;
+
+        for (Map.Entry<Integer, Integer> entry : second.entrySet()) {
+            if (entry.getValue() > maxValue) {
+                maxValue = entry.getValue();
+                foundKey = entry.getKey();
+            }
+        }
+
+        boolean res = first.contains(foundKey);
+        if (!res && first.size() == n - 1) judge = foundKey;
+        return judge;
+    }
+
+    static class Pair implements Comparable<Pair> {
+        int val;
+        int ids;
+
+        public Pair(int val, int ids) {
+            this.val = val;
+            this.ids = ids;
+        }
+
+        @Override
+        public int compareTo(Pair pair) {
+            return pair.val - this.val;
+        }
+    }
+
+    /**
+     * используем класс Pair с реализованным компоратором, где сортируется по убыванию.
+     * получаем первый элемент после прохождения в первом цикле и кладем его в очередь
+     * создаем основной цикл, который начинается с K и идет до конца. While используется что бы проходя циклом по очереди
+     * удалить первый элемент (i-k).
+     * Дальше добавляется новый элемент и происходит моментальная сортировка в очереди благодаря методу
+     * compareTo(Pair pair) в классе Pair, так как очередь элементов класса Pair
+     * и следующим шагом добавляется в результирующий массив.
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int[] res = new int[nums.length - k + 1];
+        PriorityQueue<Pair> queue = new PriorityQueue<>();
+        for (int i = 0; i < k; i++) {
+            queue.add(new Pair(nums[i], i));
+        }
+        res[0] = queue.peek().val;
+        for (int i = k; i < nums.length; i++) {
+            while (!queue.isEmpty() && queue.peek().ids <= i - k) {
+                queue.remove();
+            }
+            queue.add(new Pair(nums[i], i));
+            res[i - k + 1] = queue.peek().val;
+        }
+        return res;
+    }
+
+    public int[] maxSlidingWindow2(int[] nums, int k) {
+        int resIndex = 0, dif = k - 1;
+        int[] res = new int[nums.length - dif];
+        for (int i = 0; i < nums.length - dif; i++) {
+            int max = nums[i];
+            for (int j = i + 1; j < k + i; j++) {
+                if (nums[j] > max) max = nums[j];
+            }
+            res[resIndex] = max;
+            resIndex++;
+        }
+        return res;
+    }
+
+    public int maxProfit2(int[] prices) {
+        int[] b = new int[prices.length];
+        b[0] = 0;
+        int min = prices[0];
+        for (int i = 1; i < prices.length; i++) {
+            b[i] = Math.max(b[i - 1], prices[i] - min);
+            if (prices[i] < min)
+                min = prices[i];
+        }
+        return b[b.length - 1];
+    }
+
+    public int maxProfit(int[] prices) {
+        int[] b = new int[prices.length];
+        b[0] = 0;
+        for (int i = 1; i < prices.length; i++) {
+            b[i] = Math.max(b[i - 1], b[i - 1] + prices[i] - prices[i - 1]);
+        }
+        return b[b.length - 1];
+    }
+
+    public int maxProfit(int[] prices, int fee) {
+        int cash = 0;
+        int hold = -prices[0];
+
+        for (int i = 1; i < prices.length; i++) {
+            cash = Math.max(cash, hold + prices[i] - fee);
+            hold = Math.max(hold, cash - prices[i]);
+        }
+
+        return cash;
+    }
+
+    public int climbStairs(int n) {
+        int[] res = new int[n + 2];
+        res[0] = 0;
+        res[1] = 1;
+        for (int i = 2; i < res.length; i++) {
+            res[i] = res[i - 1] + res[i - 2];
+        }
+        return res[res.length - 1];
+    }
+
+    public List<List<Integer>> generate(int numRows) {
+        if (numRows == 1) {
+            List<List<Integer>> resOne = new ArrayList<>();
+            List<Integer> one = new ArrayList<>();
+            one.add(1);
+            resOne.add(one);
+            return resOne;
+        }
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> a = new ArrayList<>();
+        List<Integer> b = new ArrayList<>();
+        a.add(1);
+        b.add(1);
+        b.add(1);
+        res.add(a);
+        res.add(b);
+        for (int i = 1; i < numRows - 1; i++) {
+            List<Integer> step = new ArrayList<>();
+            step.add(1);
+            for (int i1 = 1; i1 < res.get(i).size(); i1++) {
+                step.add(res.get(i).get(i1) + res.get(i).get(i1 - 1));
+            }
+            step.add(1);
+            res.add(step);
+        }
+        return res;
+    }
+
+    public boolean isSubsequence(String s, String t) {
+        if (s.isEmpty()) return true;
+        if (s.length() > t.length() || s.length() == 0) return false;
+        int lastIndex = 0;
+        Map<Character, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < t.length(); i++) {
+            List<Integer> ids = map.get(t.charAt(i));
+            if (ids != null) {
+                ids.add(i);
+                map.put(t.charAt(i), ids);
+            } else {
+                List<Integer> indexes = new ArrayList<>();
+                indexes.add(i);
+                map.put(t.charAt(i), indexes);
+            }
+        }
+        for (int i = 0; i < s.length(); i++) {
+            List<Integer> ids = map.get(s.charAt(i));
+            if (ids == null || ids.size() == 0) {
+
+                return false;
+            } else {
+                int currentIndex = ids.get(0);
+                if (lastIndex > currentIndex && ids.size() > 1) {
+                    int a = 1;
+                    while (a < ids.size() && lastIndex > currentIndex) {
+                        int checkIds = ids.get(a);
+                        if (checkIds > lastIndex) currentIndex = checkIds;
+                        a++;
+                    }
+                }
+                if (lastIndex <= currentIndex) {
+                    lastIndex = currentIndex;
+                    ids.remove(0);
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public int fib(int n) {
+        int[] res = new int[n + 1];
+        if (n == 0) return res[0];
+        if (n == 1) return res[1];
+        res[0] = 0;
+        res[1] = 1;
+        for (int i = 2; i < res.length; i++) {
+            res[i] = res[i - 1] + res[i - 2];
+        }
+        return res[res.length - 1];
+    }
+
+    public int maxRepeating(String sequence, String word) {
+        int k = 0;
+        String repeatedWord = word; // Начинаем с одного повторения
+
+        // Проверяем, пока повторенное слово содержится в последовательности
+        while (sequence.contains(repeatedWord)) {
+            k++;
+            repeatedWord += word; // Увеличиваем количество повторений
+        }
+        return k;
+    }
+
+    public int longestPalindrome(String s) {
+        int[] count = new int[52];
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (Character.isLowerCase(ch)) count[s.charAt(i) - 'a']++;
+            else count[ch - 'A' + 26]++;
+        }
+
+        int max = 0;
+        int sumOfEven = 0;
+
+        for (int i = 0; i < count.length; i++) {
+            if (count[i] % 2 == 0) {
+                sumOfEven += count[i];
+            } else {
+                sumOfEven += count[i] - 1;
+                max = Math.max(max, count[i]);
+            }
+        }
+
+        if (max > 0) {
+            return sumOfEven + 1; // Длина палиндрома
+        } else {
+            return sumOfEven;
+        }
+    }
+
+    public String longestPalindrome2(String s) {
+        if (s == null || s.length() < 1) {
+            return "";
+        }
+
+        String longest = ""; // Инициализируем переменную для хранения самой длинной палиндромной подстроки
+
+        for (int i = 0; i < s.length(); i++) {
+            // Проверяем палиндром с одним центром (для нечетной длины)
+            String oddPal = expandAroundCenter(s, i, i);
+            // Проверяем палиндром с двумя центрами (для четной длины)
+            String evenPal = expandAroundCenter(s, i, i + 1);
+
+            // Сравниваем длины и обновляем самую длинную палиндромную подстроку
+            if (oddPal.length() > longest.length()) {
+                longest = oddPal;
+            }
+            if (evenPal.length() > longest.length()) {
+                longest = evenPal;
+            }
+        }
+
+        return longest; // Возвращаем самую длинную палиндромную подстроку
+    }
+
+    private String expandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return s.substring(left + 1, right); // Возвращаем палиндром
+    }
+
+    public boolean isIsomorphic(String s, String t) {
+        if (s.length() != t.length()) return false;
+        Map<Character, Character> mapS = new HashMap<>();
+        Map<Character, Character> mapT = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            char charS = s.charAt(i);
+            char charT = t.charAt(i);
+
+            Character valFromMapS = mapS.get(charS);
+            if (valFromMapS == null) mapS.put(charS, charT);
+            else if (valFromMapS != charT) return false;
+
+            Character valFromMapT = mapT.get(charT);
+            if (valFromMapT == null) mapT.put(charT, charS);
+            else if (valFromMapT != charS) return false;
+        }
+        return true;
+    }
+
+    public int removeElement(int[] nums, int val) {
+        if (nums.length == 0) return 0;
+        int left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            if (nums[right] != val) {
+                nums[left] = nums[right];
+                left++;
+            } else nums[right] = 0;
+        }
+        return left;
+    }
+
+    public int removeDuplicates(int[] nums) {
+        int left = 0;
+        for (int right = 1; right < nums.length; right++) {
+            if (nums[right] != nums[left]) {
+                left++;
+                nums[left] = nums[right];
+            }
+        }
+        return left + 1;
+    }
+
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int closestSum = nums[0] + nums[1] + nums[2];
+        int minDiff = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            int left = i + 1;
+            int right = nums.length - 1;
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                int diff = Math.abs(sum - target);
+
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestSum = sum;
+                }
+
+                if (sum < target) left++;
+                else right--;
+            }
+        }
+        return closestSum;
+    }
+
+}
 
 class Solutions {
     public static void main(String[] args) {
-
+// [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
         ArrayTasks tasks = new ArrayTasks();
-//        int[] nums1 = new int[]{1, 4, 10, 12}; // 10, 5 | 1,1
-//        int[] nums2 = new int[]{5, 8, 6, 9};
-//        int[] nums1 = new int[]{1,2,3,4};
-//        int[] nums2 = new int[]{2,10,20,19};
-//        int[] nums1 = new int[]{7,11,4,19,11,5,6,1,8};
-//        int[] nums2 = new int[]{4,7,6,16,12,9,10,2,10};
-//        int[] nums1 = new int[]{18, 4, 8, 19, 13, 8};
-//        int[] nums2 = new int[]{18, 11, 8, 2, 13, 15};
-//        System.out.println(tasks.minSumSquareDiff(nums1, nums2, 1, 1));
+        int[] prices = new int[]{-1, 2, 1, -4};
+//        int[] prices = new int[]{1, 3, 2, 8, 4, 9};
+//        int[] prices = new int[]{98, 54, 6, 34, 66, 63, 52, 39};
+//        System.out.println(tasks.buyChoco(prices, 62));
 
-//        int[] arr = new int[]{100, 5, 0, -2, 7, -5};
-//        tasks.myQuickSort(arr);
-//        System.out.println(Arrays.toString(arr));
-        String[] strings = new String[]{"i", "love", "leetcode", "i", "love", "coding"};
-//        List<String> strings1 = tasks.topKFrequentStringWithQueue(strings, 2);
-//        System.out.println(strings1);
-        int[] inside = new int[]{1, 1, 1, 2, 2, 3};
-        System.out.println(Arrays.toString(tasks.topKFrequentIntegerWithQueue(inside, 2)));
+
+        System.out.println(tasks.threeSumClosest(prices, 1));
+
 
     }
 }
