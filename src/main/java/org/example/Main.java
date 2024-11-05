@@ -8,7 +8,7 @@ public class Main {
         SinglyLinkedList list = new SinglyLinkedList();
         SinglyLinkedList list2 = new SinglyLinkedList();
         list.printMessage("Добавление элементов");
-//        list.add(7);
+        list.add(7);
         list.add(6);
         list.add(5);
         list.add(4);
@@ -17,6 +17,7 @@ public class Main {
         list.add(2);
         list.add(1);
         list.print();
+
         list2.add(5);
         list2.add(7);
         list2.add(7);

@@ -138,18 +138,15 @@ public class ArrayTasks {
 
     public int[] myCountingSort(int[] a) {
         int min = 0, max = 0;
-        for (int i = 0; i < a.length; i++) {
-            if (min > a[i]) min = a[i];
-            if (max < a[i]) max = a[i];
+        for (int k : a) {
+            if (min > k) min = k;
+            if (max < k) max = k;
         }
         int[] c = new int[(max - min) + 1];
         int[] b = new int[a.length];
-        for (int k = 0; k < c.length; k++) {
-            c[k] = 0;
-        }
 
-        for (int i = 0; i < a.length; i++) {
-            c[a[i] - min]++;
+        for (int j : a) {
+            c[j - min]++;
         }
         for (int i = 1; i < c.length; i++) {
             c[i] = c[i] + c[i - 1];
@@ -210,25 +207,24 @@ public class ArrayTasks {
      */
     public int[] sort2(int[] nums) {
         int min = 0, max = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (min > nums[i]) min = nums[i];
-            if (max < nums[i]) max = nums[i];
+        for (int num : nums) {
+            if (min > num) min = num;
+            if (max < num) max = num;
         }
         int[] c = new int[(max - min) + 1];
         int[] b = new int[nums.length];
 
-        for (int i = 0; i < c.length; i++) {
-            c[i] = 0;
-        }
-        for (int i = 0; i < nums.length; i++) {
-            c[nums[i] - min]++;
+        for (int num : nums) {
+            c[num - min]++;
         }
         for (int i = 1; i < c.length; i++) {
             c[i] = c[i] + c[i - 1];
         }
-        for (int i = 0; i < nums.length; i++) {
+        int i = 0;
+        while (i < nums.length) {
             c[nums[i] - min]--;
             b[c[nums[i] - min]] = nums[i];
+            i++;
         }
         return b;
     }
@@ -1211,20 +1207,159 @@ public class ArrayTasks {
         return closestSum;
     }
 
+    private Map<Character, Integer> getRomanNums() {
+        Map<Character, Integer> romanNumeric = new HashMap<>();
+        romanNumeric.put('I', 1);
+        romanNumeric.put('V', 5);
+        romanNumeric.put('X', 10);
+        romanNumeric.put('L', 50);
+        romanNumeric.put('C', 100);
+        romanNumeric.put('D', 500);
+        romanNumeric.put('M', 1000);
+        return romanNumeric;
+    }
+
+    public int romanToInt(String s) {
+        int total = 0;
+        Map<Character, Integer> romanNumeric = getRomanNums();
+
+        for (int i = s.length() - 1; i >= 0; i--) {
+            int currentValue = romanNumeric.get(s.charAt(i));
+
+            // Проверяем следующее значение (если оно существует)
+            if (i < s.length() - 1) {
+                int nextValue = romanNumeric.get(s.charAt(i + 1));
+                if (currentValue < nextValue) {
+                    total -= currentValue; // Вычитаем, если текущее меньше следующего
+                } else {
+                    total += currentValue; // Добавляем, если текущее больше или равно следующему
+                }
+            } else {
+                total += currentValue; // Добавляем первое(V == s.length-1) значение
+            }
+        }
+        return total;
+    }
+
+    private boolean isCompare(String first, String second) {
+        for (int i = 0; i < first.length(); i++) {
+            if (first.charAt(i) != second.charAt(i)) return false;
+        }
+        return true;
+    }
+
+    public int strStr(String haystack, String needle) {
+        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
+            String checkedString = haystack.substring(i, i + needle.length());
+            if (isCompare(checkedString, needle)) return i;
+        }
+        return -1;
+    }
+
+    public boolean rotateString(String s, String goal) {
+        if (s.length() != goal.length()) return false;
+        return (s + s).contains(goal);
+    }
+
+    public int prefixCount(String[] words, String pref) {
+        int count = 0;
+        for (String word : words) {
+            if (word.length() >= pref.length() && word.startsWith(pref)) count++;
+        }
+        return count;
+    }
+
+    public int minimumChairs(String s) {
+        int chairs = 0;
+        int max = 0;
+        for (char c : s.toCharArray()) {
+            if (c == 'E') chairs++;
+            else chairs--;
+            if (max < chairs) max = chairs;
+        }
+        if (chairs == s.length() && s.charAt(0) == 'E') return s.length();
+        else if (chairs == -s.length() && s.charAt(0) == 'L') return 0;
+        else return max;
+    }
+
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>(); // Список для хранения всех перестановок
+        backtrack(result, new ArrayList<>(), nums); // Запуск рекурсивного метода
+        return result; // Возврат всех найденных перестановок
+    }
+
+    private void backtrack(List<List<Integer>> result, List<Integer> tempList, int[] nums) {
+        if (tempList.size() == nums.length) { // Проверка, достигнута ли длина перестановки
+            result.add(new ArrayList<>(tempList)); // Добавление текущей перестановки в результат
+        } else {
+            for (int num : nums) {
+                if (tempList.contains(num)) continue; // Пропуск уже использованных элементов
+                tempList.add(num); // Добавление элемента в текущую перестановку
+                backtrack(result, tempList, nums); // Рекурсивный вызов для следующего уровня
+                tempList.remove(tempList.size() - 1); // Удаление последнего добавленного элемента (возврат)
+            }
+        }
+    }
+
+    public void nextPermutation(int[] nums) {
+        int minIndex = nums.length - 1;
+        int minValue = nums[nums.length - 1];
+        int buf = 0;
+        for (int right = nums.length - 1, left = right - 1; left >= 0; left--) {
+            if (nums[left] < nums[right]) {
+                while (left < right) {
+                    if (nums[right] < minValue){
+                        minValue = nums[right];
+                        minIndex = right;
+                    }
+                    right--;
+                }
+            }
+            buf = nums[left];
+            nums[left] = minValue;
+            nums[minIndex] = buf;
+        }
+    }
+
+
 }
 
 class Solutions {
     public static void main(String[] args) {
 // [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
         ArrayTasks tasks = new ArrayTasks();
-        int[] prices = new int[]{-1, 2, 1, -4};
+
+//        int[] prices = new int[]{-1, 2, 1, -4};
 //        int[] prices = new int[]{1, 3, 2, 8, 4, 9};
 //        int[] prices = new int[]{98, 54, 6, 34, 66, 63, 52, 39};
 //        System.out.println(tasks.buyChoco(prices, 62));
+//        System.out.println(tasks.threeSumClosest(prices, 1));
+//        String s = "ELEELEELLL";
+//        String b = "sad";
+//        System.out.println(tasks.minimumChairs(s));
+//        String word = "hello"; // Слово для преобразования
+//        byte[] bytes = word.getBytes(); // Преобразуем строку в массив байтов
+//
+//        System.out.println("Слово: " + word);
+//        System.out.println("Битовое представление:");
+//
+//        for (byte b : bytes) {
+//            String bits = byteToBits(b); // Преобразуем каждый байт в битовое представление
+//            System.out.print(bits+" "); // Выводим битовое представление
+//        }
+//    }
+//
+//    public static String byteToBits(byte b) {
+//        StringBuilder result = new StringBuilder();
+//        for (int i = 7; i >= 0; i--) {
+//            result.append((b >> i) & 0x01); // Получаем i-й бит
+//        }
+//        return result.toString(); // Возвращаем строку с битами
+//    }
 
-
-        System.out.println(tasks.threeSumClosest(prices, 1));
-
-
+        int[] nums = new int[]{3, 1, 4, 2, 5};
+        System.out.println(Arrays.toString(nums));
+        tasks.nextPermutation(nums);
+        System.out.println(Arrays.toString(nums));
     }
 }

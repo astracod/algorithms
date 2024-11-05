@@ -40,6 +40,8 @@ public class StackList {
     }
 
     public void push(int k) {
+        // из за того, что каждый раз мы переназначаем head, где старое значение прописывается в конструкторе в поле next
+        // мы всегда имеем дело с последним добавленным элементом или верхушкой стека
         head = new Node(k, head);
         ++size;
     }
@@ -79,6 +81,10 @@ class SolutionsStackList{
         while (list.getSize() < 4){
             list.push(i++);
         }
+        while (!list.isEmpty()){
+            list.pop();
+        }
+
         list.clear();
         list.peek();
 

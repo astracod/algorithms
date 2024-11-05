@@ -24,7 +24,7 @@ public class FindPath {
         }
     }
 
-    public static boolean bfs( Node source, Node destination) {
+    public static boolean bfs(Node source, Node destination) {
         Queue<Node> queue = new LinkedList<>();
         source.distance = 0;
         source.isOpen = true;
@@ -32,7 +32,7 @@ public class FindPath {
         while (!queue.isEmpty()) {
             Node u = queue.remove();
             if (u.value == destination.value) return true;
-            
+
             for (Node v : u.adjacency) {
                 if (!v.isOpen) {
                     v.isOpen = true;
@@ -41,7 +41,7 @@ public class FindPath {
                     queue.add(v);
                 }
             }
-            
+
         }
         return false;
     }
@@ -81,7 +81,7 @@ public class FindPath {
             nodes.get(edge[0]).addNeighbor(nodes.get(edge[1]));
             nodes.get(edge[1]).addNeighbor(nodes.get(edge[0]));
         }
-        return bfs(nodes.get(source),nodes.get(destination));
+        return bfs(nodes.get(source), nodes.get(destination));
     }
 
     public static void main(String[] args) {
