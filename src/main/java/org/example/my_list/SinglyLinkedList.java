@@ -60,7 +60,8 @@ public class SinglyLinkedList {
     }
 
     public void add(int k) {
-        // в ссылку next добавляется прежнее значение ссылки head и обновляется head через знак =, что делает его первым.
+        // в ссылку next добавляется прежнее значение
+        // ссылки head и обновляется head через знак =, что делает его первым.
         head = new Node(k, head);
         ++size;
     }

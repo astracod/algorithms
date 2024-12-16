@@ -66,5 +66,6 @@ public class BinarySearchByBook {
                 12, 13, 14,
                 15, 16, 17};
         System.out.println(threeSum(a));
+
     }
 }
