@@ -14,6 +14,7 @@ public class DijkstraAlgorithm {
         };
     }
 
+    // Работает только если в скобках 2 числа и числа должны быть < 9, иначе надо адаптировать
     public int TwoStackDijkstraAlgorithm(String exp) {
         Stack<Integer> numbers = new Stack<>();
         Stack<Character> operations = new Stack<>();

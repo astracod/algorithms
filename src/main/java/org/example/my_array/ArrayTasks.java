@@ -909,10 +909,6 @@ public class ArrayTasks {
      * Дальше добавляется новый элемент и происходит моментальная сортировка в очереди благодаря методу
      * compareTo(Pair pair) в классе Pair, так как очередь элементов класса Pair
      * и следующим шагом добавляется в результирующий массив.
-     *
-     * @param nums
-     * @param k
-     * @return
      */
     public int[] maxSlidingWindow(int[] nums, int k) {
         int[] res = new int[nums.length - k + 1];
