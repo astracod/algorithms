@@ -61,6 +61,6 @@ public class ClearDigits_3174 {
         String s3 = "a8f";
         String s4 = "li5i56";
         String s5 = "li5i56a";
-        System.out.println(clearDigitsForHint(s4));
+        System.out.println(clearDigitsForHint(s2));
     }
 }
