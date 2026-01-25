@@ -1,7 +1,5 @@
 package org.example.algorithms;
 
-import java.util.Arrays;
-
 public class LexicographicallySmallestPalindrome_2697 {
     public static String makeSmallestPalindrome(String s) {
         char[] arr = s.toCharArray();
